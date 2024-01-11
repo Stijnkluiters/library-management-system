@@ -23,3 +23,7 @@ And the stock system can do the following actions:
 Initial challanges: 
 - How do I tackle the shared book aggregate root entity?
 - If i publish order domain events, how do I consume those in the stock domain?
+
+After implementing the code, the two questions were answered by creating the models.
+I made a simple EventBus class which is re-registered after registering the subscriber events to the eventbus. To mimic an singleton.
+And for the first question, thats not necessary, just create two roots as book in the two bounded contexts.
