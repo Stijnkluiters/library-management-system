@@ -28,11 +28,7 @@ final readonly class OrderService
         $customer = Customer::make($customerId);
         $period = Period::make($start, $end);
 
-        try {
-            $book->rentBook($customer, $period);
-        } catch (PriceCannotBeLowerThanZeroException $cannotBeLowerThanZeroException) {
-            // todo: add error handling
-        }
+        $book->rentBook($customer, $period);
 
         $this->orderRepository->saveOrder($book, $customer, $period);
 
