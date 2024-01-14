@@ -12,8 +12,13 @@ class Book extends Model
 
     protected $fillable = [
         'title',
-        'price'
+        'price',
+        'quantity'
     ];
+    public function getId(): int
+    {
+        return $this->id;
+    }
 
     public function getTitle(): string
     {
@@ -25,8 +30,8 @@ class Book extends Model
         return $this->price;
     }
 
-    public function stock(): HasOne
+    public function getQuantity(): int
     {
-        return $this->hasOne(Stock::class, 'book_title', 'title');
+        return $this->quantity;
     }
 }

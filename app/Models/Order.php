@@ -16,12 +16,14 @@ class Order extends Model
         'customer_id',
         'book_id',
         'start_at',
-        'end_at'
+        'end_at',
+        'returned_at'
     ];
 
     protected $casts = [
         'start_at' => 'date',
-        'end_at' => 'date'
+        'end_at' => 'date',
+        'returned_at' => 'date'
     ];
 
     public function getPrice(): int
@@ -47,5 +49,10 @@ class Order extends Model
     public function getEndAt(): Carbon
     {
         return $this->end_at;
+    }
+
+    public function getReturnedAt(): ?Carbon
+    {
+        return $this->returned_at;
     }
 }

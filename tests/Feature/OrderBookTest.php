@@ -25,11 +25,6 @@ class OrderBookTest extends TestCase
         $book = Book::factory()->create(['title' => $bookTitle]);
         $customerId = 1;
 
-        /** @var Stock $stock */
-        $stock = Stock::create([
-            'book_title' => $bookTitle,
-            'quantity' => 1,
-        ]);
         $response = $this->post(route('books.order', $bookTitle), [
             'book_title' => $bookTitle,
             'customer_id' => $customerId,
@@ -37,14 +32,12 @@ class OrderBookTest extends TestCase
             'end_at' => Carbon::now()->addMonth()->toDateTimeString(),
         ]);
 
-        $stock->refresh();
         $this->assertDatabaseCount('orders', 1);
         $this->assertDatabaseCount('books', 1);
         $this->assertDatabaseHas('orders', [
             'customer_id' => $customerId,
             'price' => $book->price,
         ]);
-        $this->assertSame(0, $stock->getQuantity());
 
         $response->assertStatus(302);
     }
@@ -52,32 +45,25 @@ class OrderBookTest extends TestCase
     public function test_cannot_order_two_books_when_there_is_only_one_in_stock(): void
     {
         $bookTitle = 'my_amazing_book_title';
-        $book = Book::factory()->create(['title' => $bookTitle]);
+        $book = Book::factory()->create(['title' => $bookTitle, 'quantity' => 1]);
         $customerId = 1;
-
-        /** @var Stock $stock */
-        $stock = Stock::create([
-            'book_title' => $bookTitle,
-            'quantity' => 1,
-        ]);
-        $responseOne = $this->post(route('books.order', $bookTitle), [
+        $this->post(route('books.order', $bookTitle), [
             'book_title' => $bookTitle,
             'customer_id' => $customerId,
             'start_at' => Carbon::now()->toDateTimeString(),
             'end_at' => Carbon::now()->addMonth()->toDateTimeString(),
         ]);
-        $stock->refresh();
+        $book->refresh();
         $this->assertDatabaseCount('orders', 1);
         $this->assertDatabaseCount('books', 1);
         $this->assertDatabaseHas('orders', [
-            'book_id' => 2,
             'customer_id' => $customerId,
             'price' => $book->price,
         ]);
-        $this->assertSame(0, $stock->getQuantity());
 
+        $this->assertSame(0, $book->getQuantity());
         $this->expectException(ValidationException::class);
-        $this->expectExceptionMessage('Stock does not contain enough of: '. $bookTitle);
+        $this->expectExceptionMessage("$bookTitle Does not have enough supply to be rented");
         $this->post(route('books.order', $bookTitle), [
             'book_title' => $bookTitle,
             'customer_id' => $customerId,

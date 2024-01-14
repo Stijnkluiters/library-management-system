@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedInteger('price');
             $table->string('title');
+            $table->unsignedInteger('quantity');
             $table->timestamps();
         });
     }

@@ -11,6 +11,7 @@ class BookFactory extends Factory
     public function definition(): array
     {
         return [
+            'quantity' => rand(1, 8),
             'title' => fake()->name(),
             'price' => fake()->randomNumber(3) // in cents
         ];

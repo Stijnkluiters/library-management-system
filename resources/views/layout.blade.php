@@ -23,6 +23,16 @@
 <body>
     <div class="container mx-auto px-4">
         @yield('content')
+        @if($errors->count() > 0)
+            <ul style="background: red">
+            @foreach($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+            </ul>
+        @endif
+        @if(Session::has('message'))
+            <h2>{{ Session::get('message') }}</h2>
+        @endif
     </div>
 </body>
 </html>
