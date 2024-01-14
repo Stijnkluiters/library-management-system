@@ -14,9 +14,9 @@ final class EventBus
         $this->subscribers[$eventName][] = $subscriber;
     }
 
-    public function publish(string $eventName, DomainEvent $domainEvent): void
+    public function publish(DomainEvent $domainEvent): void
     {
-        foreach ($this->subscribers[$eventName] as $subscriber) {
+        foreach ($this->subscribers[$domainEvent::class] as $subscriber) {
             $subscriber($domainEvent);
         }
     }

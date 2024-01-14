@@ -25,4 +25,9 @@ final readonly class Price
     {
         return $this->price;
     }
+
+    public function toHumanReadableString(): string
+    {
+        return number_format($this->price / 100, 2);
+    }
 }

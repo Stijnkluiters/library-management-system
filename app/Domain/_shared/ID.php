@@ -11,9 +11,9 @@ final readonly class ID implements Stringable
     ) {
     }
 
-    public static function createFromInt(int $customerId): self
+    public static function createFromInt(int $id): self
     {
-        return new self($customerId);
+        return new self($id);
     }
 
     public function getId(): int
