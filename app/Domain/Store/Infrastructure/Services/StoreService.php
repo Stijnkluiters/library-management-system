@@ -42,6 +42,15 @@ final readonly class StoreService
         return $rentedBook;
     }
 
+    public function revokeBook(ID $bookId): void
+    {
+        $revokedBook = $this->store->revokeBook($bookId);
+
+        $this->bookRepository->delete($revokedBook);
+
+        $this->publishEvents();
+    }
+
     public function returnBook(string $bookTitle, ID $orderId): Book
     {
         $book = $this->bookRepository->getBookByTitle($bookTitle);

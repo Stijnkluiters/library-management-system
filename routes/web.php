@@ -14,7 +14,8 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-Route::get('/books', [BookController::class, 'index'])->name('books.index');
+Route::resource('books', BookController::class);
+#Route::get('/books', [BookController::class, 'index'])->name('books.index');
 Route::post('/book/{title}', [BookController::class, 'order'])->name('books.order');
 Route::post('/orders/{title}', [BookController::class, 'return'])->name('books.return');
 

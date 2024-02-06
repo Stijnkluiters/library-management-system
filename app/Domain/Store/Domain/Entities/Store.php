@@ -9,12 +9,12 @@ use App\Domain\_shared\ID;
 use App\Domain\AggregateRoot;
 use App\Domain\Store\Domain\Events\BookRentedEvent;
 use App\Domain\Store\Domain\Events\BookReturnedEvent;
+use App\Domain\Store\Domain\Events\BookRevokedEvent;
 use App\Domain\Store\Domain\Repositories\StockRepositoryInterface;
 use App\Domain\Store\Domain\ValueObjects\Period;
 
 final class Store extends AggregateRoot
 {
-    private array $counter = [];
     public function __construct(
         private readonly StockRepositoryInterface $stock,
     ) {
@@ -44,8 +44,22 @@ final class Store extends AggregateRoot
         throw new DomainException('Book has not been found!');
     }
 
+    public function revokeBook(ID $bookID): Book
+    {
+        $book = $this->stock->getBook($bookID);
+
+        $book->revokeBook();
+
+        $this->addEvent(
+            new BookRevokedEvent($book)
+        );
+
+        return $book;
+    }
+
     public function returnBook(Book $book, Order $order): Book
     {
+        // todo: handle scenario where book is not sold anymore (soft_deleted but still returned)
         $book->increaseQuantity();
 
         $this->addEvent(new BookReturnedEvent($book, $order));

@@ -38,7 +38,7 @@ class Order extends Model
 
     public function book(): BelongsTo
     {
-        return $this->belongsTo(Book::class, 'book_id','id');
+        return $this->belongsTo(Book::class, 'book_id','id')->withTrashed();
     }
 
     public function getStartAt(): Carbon

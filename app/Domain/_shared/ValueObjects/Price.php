@@ -30,4 +30,9 @@ final readonly class Price
     {
         return number_format($this->price / 100, 2);
     }
+
+    public function getPriceDividedBy100(): float
+    {
+        return ($this->price / 100);
+    }
 }

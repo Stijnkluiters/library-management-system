@@ -17,6 +17,11 @@ final class Book
     ) {
     }
 
+    public function getFullPrice(): float
+    {
+        return $this->price->getPriceDividedBy100();
+    }
+
     public function getId(): ID
     {
         return $this->bookId;
@@ -45,5 +50,10 @@ final class Book
     public function increaseQuantity(): void
     {
         $this->quantity = $this->quantity + 1;
+    }
+
+    public function revokeBook(): void
+    {
+        $this->quantity = 0;
     }
 }

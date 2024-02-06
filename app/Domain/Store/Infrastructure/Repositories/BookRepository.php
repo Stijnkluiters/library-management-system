@@ -9,6 +9,7 @@ use App\Domain\_shared\ValueObjects\Price;
 use App\Domain\Store\Domain\Entities\Book as BookEntity;
 use App\Domain\Store\Domain\Repositories\StockRepositoryInterface;
 use App\Models\Book as BookModel;
+use Carbon\CarbonImmutable;
 
 final readonly class BookRepository implements StockRepositoryInterface
 {
@@ -19,7 +20,7 @@ final readonly class BookRepository implements StockRepositoryInterface
 
     #[\Override] public function getBook(ID $bookId): BookEntity
     {
-        $bookModel = BookModel::find($bookId->getId());
+        $bookModel = BookModel::findOrFail($bookId->getId());
 
         return $this->fromModelToDomain($bookModel);
     }
@@ -35,9 +36,51 @@ final readonly class BookRepository implements StockRepositoryInterface
         return $bookEntities;
     }
 
+    public function create(array $bookAttributes): BookEntity
+    {
+        if (!isset($bookAttributes['quantity'])) {
+            $bookAttributes['quantity'] = 1;
+        }
+        $bookModel = BookModel::create($bookAttributes);
+
+        return $this->fromModelToDomain($bookModel);
+    }
+
+    public function updateBook(BookEntity $originalBook, array $bookAttributes): BookEntity
+    {
+        $bookModel = BookModel::findOrFail($originalBook->getId());
+        $bookModel->title = $bookAttributes['title'];
+        $bookModel->price = $bookAttributes['price'];
+        $bookModel->save();
+
+        return $this->fromModelToDomain($bookModel);
+    }
+
     public function getBookByTitle(string $bookTitle): BookEntity
     {
         return $this->fromModelToDomain(BookModel::where('title', $bookTitle)->firstOrFail());
+    }
+
+    public function save(BookEntity $rentedBook): void
+    {
+        $bookModel = BookModel::find($rentedBook->getId());
+        $bookModel->quantity = $rentedBook->getQuantity();
+        $bookModel->save();
+    }
+
+    public function delete(BookEntity $revokedBook): void
+    {
+        $bookModel = BookModel::find($revokedBook->getId());
+        $bookModel->quantity = 0;
+        $bookModel->deleted_at = CarbonImmutable::now();
+        $bookModel->save();
+    }
+
+    public function increaseBookQuantityById(ID $bookId): void
+    {
+        $bookModel = BookModel::find($bookId);
+        $bookModel->quantity = $bookModel->getQuantity() + 1;
+        $bookModel->saveOrFail();
     }
 
     private function fromModelToDomain(BookModel $bookModel): BookEntity
@@ -48,19 +91,5 @@ final readonly class BookRepository implements StockRepositoryInterface
             Price::makeFromPrice($bookModel->getPrice()),
             $bookModel->getQuantity()
         );
-    }
-
-    public function save(BookEntity $rentedBook): void
-    {
-        $bookModel = BookModel::find($rentedBook->getId());
-        $bookModel->quantity = $rentedBook->getQuantity();
-        $bookModel->save();
-    }
-
-    public function increaseBookQuantityById(ID $bookId): void
-    {
-        $bookModel = BookModel::find($bookId);
-        $bookModel->quantity = $bookModel->getQuantity() + 1;
-        $bookModel->saveOrFail();
     }
 }

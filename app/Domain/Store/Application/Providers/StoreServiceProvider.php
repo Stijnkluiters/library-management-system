@@ -7,6 +7,7 @@ namespace App\Domain\Store\Application\Providers;
 use App\Domain\_shared\EventBus;
 use App\Domain\Store\Domain\Events\BookRentedEvent;
 use App\Domain\Store\Domain\Events\BookReturnedEvent;
+use App\Domain\Store\Domain\Events\BookRevokedEvent;
 use App\Domain\Store\Domain\Repositories\StockRepositoryInterface;
 use App\Domain\Store\Infrastructure\Repositories\BookRepository;
 use App\Domain\Store\Infrastructure\Services\OrderService;
@@ -39,6 +40,9 @@ class StoreServiceProvider extends ServiceProvider
 
         $eventBus->subscribe(BookReturnedEvent::class, function (BookReturnedEvent $bookReturnedEvent) use ($orderService) {
             $orderService->markOrderAsReturned($bookReturnedEvent);
+        });
+        $eventBus->subscribe(BookRevokedEvent::class, function (BookRevokedEvent $bookReturnedEvent) use ($orderService) {
+            // no one listens yet when a book is revoked.
         });
 
         $this->app->bind(EventBus::class, function () use ($eventBus) {
