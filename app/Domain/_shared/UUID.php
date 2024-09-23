@@ -12,7 +12,6 @@ final readonly class UUID implements Stringable
     public function __construct(
         private string $id
     ) {
-
     }
 
     public static function createFromString(string $id): self

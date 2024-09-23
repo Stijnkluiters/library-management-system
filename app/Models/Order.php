@@ -17,44 +17,9 @@ class Order extends Model
 
     protected $fillable = [
         'uuid',
-        'price',
         'customer_id',
-        'book_id',
-        'start_at',
-        'end_at',
-        'returned_at'
+        'version'
     ];
-
-    protected $casts = [
-        'start_at' => 'date',
-        'end_at' => 'date',
-        'returned_at' => 'date'
-    ];
-
-    public function getPrice(): int
-    {
-        return $this->price;
-    }
-
-    public function customer(): BelongsTo
-    {
-        throw new \Exception('not implemented yet');
-    }
-
-    public function getStartAt(): Carbon
-    {
-        return $this->start_at;
-    }
-
-    public function getEndAt(): Carbon
-    {
-        return $this->end_at;
-    }
-
-    public function getReturnedAt(): ?Carbon
-    {
-        return $this->returned_at;
-    }
 
     public function orderLines(): HasMany
     {
