@@ -6,12 +6,17 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Order extends Model
 {
     use HasFactory;
+    protected $primaryKey = 'uuid';
+    protected $keyType = 'string';
+    public $incrementing = false;
 
     protected $fillable = [
+        'uuid',
         'price',
         'customer_id',
         'book_id',
@@ -36,11 +41,6 @@ class Order extends Model
         throw new \Exception('not implemented yet');
     }
 
-    public function book(): BelongsTo
-    {
-        return $this->belongsTo(Book::class, 'book_id','id')->withTrashed();
-    }
-
     public function getStartAt(): Carbon
     {
         return $this->start_at;
@@ -54,5 +54,10 @@ class Order extends Model
     public function getReturnedAt(): ?Carbon
     {
         return $this->returned_at;
+    }
+
+    public function orderLines(): HasMany
+    {
+        return $this->hasMany(OrderLine::class, 'order_id','uuid');
     }
 }

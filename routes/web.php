@@ -20,3 +20,5 @@ Route::post('/book/{title}', [BookController::class, 'order'])->name('books.orde
 Route::post('/orders/{title}', [BookController::class, 'return'])->name('books.return');
 
 Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+
+Route::get('/', fn() => view('welcome'));

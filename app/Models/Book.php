@@ -10,14 +10,19 @@ class Book extends Model
 {
     use HasFactory;
     use SoftDeletes;
+    protected $keyType = 'string';
+    public $incrementing = false;
+    protected $primaryKey = 'uuid';
+
     protected $fillable = [
+        'uuid',
         'title',
         'price',
         'quantity'
     ];
-    public function getId(): int
+    public function getId(): string
     {
-        return $this->id;
+        return $this->uuid;
     }
 
     public function getTitle(): string
