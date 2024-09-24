@@ -10,7 +10,7 @@ Run docker-compose up and check if the `.env` is created.
 docker exec -it app sh and execute `php artisan key:generate;php artisan migrate;php artisan db:seed --class=ProductSeeder`
 
 ### Acceptance Criteria
-We have a order system and a stock system. The order system is responsible for the following actions:
+We have an order system and a stock system. The order system is responsible for the following actions:
 - A user can view his order and his order lines. ✔
 - A user can check the total price of his order.
 - A user can rent a product for a certain period which creates an order.

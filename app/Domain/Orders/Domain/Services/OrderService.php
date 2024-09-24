@@ -16,11 +16,14 @@ readonly class OrderService
     ) {
     }
 
-    public function orderProduct($product, $amount): void
+    public function orderProduct($productId, $amount): Order
     {
+        $product = $this->orderRepository->getProductById($productId);
         $newOrder = OrderFactory::createNew();
         $newOrder->addOrderLine($product, $amount);
         $this->orderRepository->save($newOrder);
+
+        return $newOrder;
     }
 
     /**

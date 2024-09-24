@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Orders\Infrastructure\Repository;
 
+use App\Domain\_shared\EventBus;
 use App\Domain\_shared\UUID;
 use App\Domain\_shared\ValueObjects\Price;
 use App\Domain\_shared\Version;
@@ -12,12 +13,18 @@ use App\Domain\Orders\Domain\Entities\OrderLine;
 use App\Domain\Orders\Domain\Events\OrderLineAdded;
 use App\Domain\Orders\Domain\Repository\OrderRepositoryInterface;
 use App\Domain\Orders\Domain\ValueObjects\Product;
+use DomainException;
 use Nette\NotImplementedException;
 use App\Models\Order as OrderModel;
 use App\Models\OrderLine as OrderLineModel;
 
 readonly class OrderRepository implements OrderRepositoryInterface
 {
+    public function __construct(
+        private EventBus $eventBus
+    ) {
+    }
+
     public function save(Order $order): void
     {
         foreach ($order->getEvents() as $domainEvent) {
@@ -31,25 +38,34 @@ readonly class OrderRepository implements OrderRepositoryInterface
     private function storeOrderLineAdded(OrderLineAdded $domainEvent): void
     {
         $product = $domainEvent->getOrderLine()->product;
-
-        $orderLineModel = OrderLineModel::create([
-            'uuid' => $domainEvent->getOrderLine()->uuid,
-            'amount' => $domainEvent->getOrderLine()->amount,
-            'price' => $product->getPriceAsInteger(), // todo:
-            'product_id' => $product->getUuid(),
-            'name' => $product->getName(),
-        ]);
+        $versionNumber = $domainEvent->getVersion()->getVersionNumber();
         $orderModel = OrderModel::firstOrCreate(
             [
                 'uuid' => $domainEvent->getOrderUuid(),
             ],
             [
                 'uuid' => $domainEvent->getOrderUuid(),
-                'version' => $domainEvent->getVersion(),
+                'user_id' => '7f708597-79e2-11ef-b26c-0242ac190002',
+                'version' => 1,
             ]
         );
+        if ($orderModel->version === $versionNumber) {
+            throw new DomainException('Concurrency Protection! __We must replay the whole order OR tell the customer to retry__');
+        }
+        $orderModel->update(['version' => $domainEvent->getVersion()->getVersionNumber()]);
+
+        $orderLineModel = OrderLineModel::create([
+            'order_id' => $domainEvent->getOrderUuid(),
+            'uuid' => $domainEvent->getOrderLine()->uuid,
+            'amount' => $domainEvent->getOrderLine()->amount,
+            'price' => $product->getPriceAsInteger(),
+            'product_id' => $product->getUuid(),
+            'name' => $product->getName(),
+        ]);
 
         $orderModel->orderLines()->saveMany([$orderLineModel]);
+
+        $this->eventBus->publish($domainEvent);
     }
 
     /**
@@ -91,5 +107,17 @@ readonly class OrderRepository implements OrderRepositoryInterface
         $order = OrderModel::findOrFail($orderId);
 
         return $this->fromModelToDomain($order);
+    }
+
+    public function getProductById(string $productId): Product
+    {
+        /** @var \App\Models\Product $productModel */
+        $productModel = \App\Models\Product::where('uuid', $productId)->firstOrFail();
+
+        return new Product(
+            UUID::createFromString($productModel->uuid),
+            new Price($productModel->price),
+            $productModel->name
+        );
     }
 }

@@ -7,7 +7,7 @@ namespace App\Domain\_shared;
 
 final class EventBus
 {
-    private array $subscribers;
+    private array $subscribers = [];
 
     public function subscribe(string $eventName, callable $subscriber): void
     {
@@ -16,8 +16,10 @@ final class EventBus
 
     public function publish(DomainEvent $domainEvent): void
     {
-        foreach ($this->subscribers[$domainEvent::class] as $subscriber) {
-            $subscriber($domainEvent);
+        if (isset($this->subscribers[$domainEvent::class])) {
+            foreach ($this->subscribers[$domainEvent::class] as $subscriber) {
+                $subscriber($domainEvent);
+            }
         }
     }
 }

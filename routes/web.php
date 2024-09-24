@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\BookController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
@@ -15,9 +14,12 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+Route::middleware(['web'])->group(function () {
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders/{orderId}', [OrderController::class, 'show'])->name('orders.show');
 
-Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
-Route::get('/orders/{orderId}', [OrderController::class, 'show'])->name('orders.show');
-Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+    Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+    Route::post('/products/{productId}', [OrderController::class, 'order'])->name('products.order');
 
-Route::get('/', fn() => view('welcome'))->name('welcome');
+    Route::get('/', fn() => view('welcome'))->name('welcome');
+});

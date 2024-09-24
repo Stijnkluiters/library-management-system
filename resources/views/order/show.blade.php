@@ -9,7 +9,7 @@
                     <hr/>
                     <ul>
                         <li>Product Uuid: {{ $orderLine->product->getUuid() }}</li>
-                        <li>Price: {{ $orderLine->product->getPrice()->toHumanReadableString() }}</li>
+                        <li>Price: {!!  $orderLine->product->getPrice()->toHumanReadableString() !!}</li>
                         <li>Name: {{ $orderLine->product->getName() }}</li>
                         <li>Amount: {{ $orderLine->amount }}</li>
                     </ul>

@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * @property-read string $uuid
+ * @property int $version
+ * @property string $user_id
+ */
 class Order extends Model
 {
     use HasFactory;
@@ -17,7 +20,7 @@ class Order extends Model
 
     protected $fillable = [
         'uuid',
-        'customer_id',
+        'user_id',
         'version'
     ];
 

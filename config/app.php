@@ -1,7 +1,7 @@
 <?php
 
-use App\Domain\Store\Application\Providers\StoreServiceProvider;
-use App\Providers\DomainServiceProvider;
+use App\Domain\Catalog\Application\CatalogServiceProvider;
+use App\Domain\Orders\Application\Providers\OrderServiceProvider;
 use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\ServiceProvider;
 
@@ -167,8 +167,8 @@ return [
          */
         #StockServiceProvider::class,
         App\Providers\DomainServiceProvider::class,
-        \App\Domain\Orders\Application\Providers\OrderServiceProvider::class,
-
+        OrderServiceProvider::class,
+        CatalogServiceProvider::class,
 
         App\Providers\AppServiceProvider::class,
         App\Providers\AuthServiceProvider::class,

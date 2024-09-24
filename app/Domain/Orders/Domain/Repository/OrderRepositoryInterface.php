@@ -6,6 +6,7 @@ namespace App\Domain\Orders\Domain\Repository;
 
 use App\Domain\_shared\UUID;
 use App\Domain\Orders\Domain\Entities\Order;
+use App\Domain\Orders\Domain\ValueObjects\Product;
 
 interface OrderRepositoryInterface
 {
@@ -14,4 +15,6 @@ interface OrderRepositoryInterface
     public function getAllOrdersForUser(UUID $userId): array;
 
     public function getOrderById(string $orderId): Order;
+
+    public function getProductById(string $productId): Product;
 }

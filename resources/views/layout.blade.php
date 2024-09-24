@@ -18,7 +18,9 @@
         </div>
     </nav>
     <div class="container">
-
+        @if(Session::has('success'))
+            <h2 class="bg-green">{{ Session::get('success') }}</h2>
+        @endif
         @yield('content')
 
         @if($errors->count() > 0)
@@ -31,6 +33,7 @@
         @if(Session::has('message'))
             <h2>{{ Session::get('message') }}</h2>
         @endif
+
     </div>
 </body>
 </html>

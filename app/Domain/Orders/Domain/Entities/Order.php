@@ -8,7 +8,7 @@ use App\Domain\_shared\UUID;
 use App\Domain\_shared\Version;
 use App\Domain\AggregateRoot;
 use App\Domain\Orders\Domain\Events\OrderLineAdded;
-use ValueObjects\Product;
+use App\Domain\Orders\Domain\ValueObjects\Product;
 
 class Order extends AggregateRoot
 {
@@ -26,7 +26,7 @@ class Order extends AggregateRoot
         $this->addEvent(new OrderLineAdded(
             $this->uuid,
             $orderLine,
-            $this->version++
+            new Version($this->version->getVersionNumber() + 1)
         ));
     }
 
