@@ -6,6 +6,12 @@ and runs in php 8.3
 
 ### install guide: 
 
+Generate a ssl certificate by the following commands:
+Windows:
+`"C:\Program Files\Git\usr\bin\openssl.exe" genpkey -algorithm RSA -out /etc/nginx/conf.d/ssl/private.key`
+`"C:\Program Files\Git\usr\bin\openssl.exe" openssl req -new -key /etc/nginx/conf.d/ssl/private.key -out /etc/nginx/conf.d/ssl/certificate.csr`
+`"C:\Program Files\Git\usr\bin\openssl.exe" openssl req -x509 -days 365 -key /etc/nginx/conf.d/ssl/private.key -in /etc/nginx/conf.d/ssl/certificate.csr -out /etc/nginx/conf.d/ssl/certificate.crt`
+
 Run docker-compose up and check if the `.env` is created.
 docker exec -it app sh and execute `php artisan key:generate;php artisan migrate;php artisan db:seed --class=ProductSeeder`
 
