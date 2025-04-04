@@ -45,7 +45,7 @@ readonly class OrderRepository implements OrderRepositoryInterface
             ],
             [
                 'uuid' => $domainEvent->getOrderUuid(),
-                'user_id' => '7f708597-79e2-11ef-b26c-0242ac190002',
+                'user_id' => $domainEvent->getUserId(),
                 'version' => 1,
             ]
         );
