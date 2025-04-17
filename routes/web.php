@@ -17,10 +17,11 @@ use Illuminate\Support\Facades\Route;
 */
 Route::middleware(['web'])->group(function () {
     Route::get('/', [HomeController::class, 'index'])->name('home.index');
+    Route::get('/add-to-cart/{productId}', [HomeController::class, 'addToCart'])->name('home.addToCart');
 
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{orderId}', [OrderController::class, 'show'])->name('orders.show');
 
     Route::get('/products', [ProductController::class, 'index'])->name('products.index');
-    Route::post('/products/{productId}', [OrderController::class, 'order'])->name('products.order');
+    Route::post('/products', [OrderController::class, 'order'])->name('products.order');
 });

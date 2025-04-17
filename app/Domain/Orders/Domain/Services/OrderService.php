@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\Orders\Domain\Services;
 
 use App\Domain\_shared\UUID;
+use App\Domain\Catalog\Application\ShoppingCartItems;
 use App\Domain\Orders\Domain\Entities\Order;
 use App\Domain\Orders\Domain\Factory\OrderFactory;
 use App\Domain\Orders\Domain\Repository\OrderRepositoryInterface;
@@ -53,5 +54,24 @@ readonly class OrderService
     public function getOrderById(string $orderId): Order
     {
         return $this->orderRepository->getOrderById($orderId);
+    }
+
+    /**
+     * @param \App\Domain\Catalog\Application\ShoppingCartItems $shoppingCartItems
+     *
+     * @return \App\Domain\Orders\Domain\Entities\Order
+     */
+    public function orderByShoppingCartItems(ShoppingCartItems $shoppingCartItems): Order
+    {
+        $newOrder = OrderFactory::createNew();
+
+        foreach ($shoppingCartItems as $uuid) {
+            $product = $this->orderRepository->getProductById($uuid);
+            $newOrder->addOrderLine($product, 1);
+        }
+
+        $this->orderRepository->save($newOrder);
+
+        return $newOrder;
     }
 }

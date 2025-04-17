@@ -15,6 +15,12 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container">
             <a class="navbar-brand" href="{{ route('home.index') }}">Home</a>
+            @if(isset($shoppingCartItems))
+                <form action="{{ route('products.order') }}" method="post">
+                    @csrf
+                    <button type="submit" name="order">Order {{ count($shoppingCartItems) }}</button>
+                </form>
+            @endif
         </div>
     </nav>
     <div class="container">

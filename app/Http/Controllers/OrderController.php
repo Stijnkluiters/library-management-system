@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Domain\_shared\UUID;
+use App\Domain\Catalog\Infrastructure\Services\ShoppingCartService;
 use App\Domain\Orders\Domain\Services\OrderService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -11,22 +11,28 @@ class OrderController extends Controller
 {
     /**
      * @param \App\Domain\Orders\Domain\Services\OrderService $orderService
+     * @param \App\Domain\Catalog\Infrastructure\Services\ShoppingCartService $shoppingCartService
      */
     public function __construct(
         private readonly OrderService $orderService,
+        private readonly ShoppingCartService $shoppingCartService,
     ) {
     }
 
     /**
-     * @param string $productId
-     *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function order(string $productId): RedirectResponse
+    public function order(): RedirectResponse
     {
-        $uuid = UUID::createFromString($productId);
+        $shoppingCartItems = $this->shoppingCartService->popAllShoppingCartItems();
 
-        $order = $this->orderService->orderProduct($uuid, 1);
+        if ($shoppingCartItems === null) {
+            return redirect()
+                ->route('home.index')
+                ->with('Error', 'There was nothing in your shopping cart.');
+        }
+
+        $order = $this->orderService->orderByShoppingCartItems($shoppingCartItems);
 
         return redirect()
             ->route('orders.show', $order->getUuid())

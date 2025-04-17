@@ -20,7 +20,7 @@ class Order extends AggregateRoot
      */
     public function __construct(
         private readonly UUID $uuid,
-        private readonly Version $version,
+        private Version $version,
         private array $orderLines,
     ) {
     }
@@ -35,10 +35,11 @@ class Order extends AggregateRoot
     {
         $orderLine = new OrderLine(UUID::new(), $product, $amount);
         $this->orderLines[] = $orderLine;
+        $this->version = new Version($this->version->getVersionNumber() + 1);
         $this->addEvent(new OrderLineAdded(
             $this->uuid,
             $orderLine,
-            new Version($this->version->getVersionNumber() + 1)
+            $this->version,
         ));
     }
 

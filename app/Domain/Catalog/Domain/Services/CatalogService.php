@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Catalog\Domain\Services;
 
+use App\Domain\_shared\UUID;
 use App\Domain\Catalog\Domain\Entities\Product;
 use App\Domain\Catalog\Domain\Repositories\ProductRepositoryInterface;
 use Illuminate\Support\Facades\Log;
@@ -27,5 +28,15 @@ readonly class CatalogService
     public function notifyProductOrderedSuccessful(): void
     {
         Log::channel('eventBus')->info('Product ordered successfully');
+    }
+
+    /**
+     * @param \App\Domain\_shared\UUID $uuid
+     *
+     * @return \App\Domain\Catalog\Domain\Entities\Product
+     */
+    public function findProduct(UUID $uuid): Product
+    {
+        return $this->productRepositoryInterface->find($uuid);
     }
 }
