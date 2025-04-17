@@ -9,6 +9,11 @@ use App\Domain\Orders\Domain\ValueObjects\Product;
 
 readonly class OrderLine
 {
+    /**
+     * @param \App\Domain\_shared\UUID $uuid
+     * @param \App\Domain\Orders\Domain\ValueObjects\Product $product
+     * @param int $amount
+     */
     public function __construct(
         public UUID $uuid,
         public Product $product,

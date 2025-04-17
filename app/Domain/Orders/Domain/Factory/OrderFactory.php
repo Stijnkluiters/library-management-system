@@ -10,6 +10,11 @@ use App\Domain\Orders\Domain\Entities\Order;
 
 readonly class OrderFactory
 {
+    /**
+     * Creates a new Order Entity
+     *
+     * @return \App\Domain\Orders\Domain\Entities\Order
+     */
     public static function createNew(): Order
     {
         return new Order(UUID::new(), new Version(1), []);

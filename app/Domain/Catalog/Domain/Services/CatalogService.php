@@ -12,7 +12,9 @@ readonly class CatalogService
 {
     public function __construct(
         private ProductRepositoryInterface $productRepositoryInterface
-    ) { }
+    )
+    {
+    }
 
     /**
      * @return Product[]

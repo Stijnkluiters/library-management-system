@@ -10,11 +10,31 @@ use App\Domain\Orders\Domain\ValueObjects\Product;
 
 interface OrderRepositoryInterface
 {
+    /**
+     * @param \App\Domain\Orders\Domain\Entities\Order $order
+     *
+     * @return void
+     */
     public function save(Order $order): void;
 
+    /**
+     * @param \App\Domain\_shared\UUID $userId
+     *
+     * @return array
+     */
     public function getAllOrdersForUser(UUID $userId): array;
 
+    /**
+     * @param string $orderId
+     *
+     * @return \App\Domain\Orders\Domain\Entities\Order
+     */
     public function getOrderById(string $orderId): Order;
 
+    /**
+     * @param string $productId
+     *
+     * @return \App\Domain\Orders\Domain\ValueObjects\Product
+     */
     public function getProductById(string $productId): Product;
 }

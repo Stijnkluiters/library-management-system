@@ -11,11 +11,20 @@ use App\Domain\Orders\Domain\Repository\OrderRepositoryInterface;
 
 readonly class OrderService
 {
+    /**
+     * @param \App\Domain\Orders\Domain\Repository\OrderRepositoryInterface $orderRepository
+     */
     public function __construct(
         private OrderRepositoryInterface $orderRepository,
     ) {
     }
 
+    /**
+     * @param $productId
+     * @param $amount
+     *
+     * @return \App\Domain\Orders\Domain\Entities\Order
+     */
     public function orderProduct($productId, $amount): Order
     {
         $product = $this->orderRepository->getProductById($productId);
@@ -27,13 +36,20 @@ readonly class OrderService
     }
 
     /**
-     * @return Order[]
+     * @param \App\Domain\_shared\UUID $userId
+     *
+     * @return \App\Domain\Orders\Domain\Entities\Order[]
      */
     public function getAllOrdersForUser(UUID $userId): array
     {
         return $this->orderRepository->getAllOrdersForUser($userId);
     }
 
+    /**
+     * @param string $orderId
+     *
+     * @return \App\Domain\Orders\Domain\Entities\Order
+     */
     public function getOrderById(string $orderId): Order
     {
         return $this->orderRepository->getOrderById($orderId);
