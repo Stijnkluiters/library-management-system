@@ -16,30 +16,52 @@ class OrderProductTest extends TestCase
 {
     use RefreshDatabase;
 
+    /**
+     * @var \App\Models\User
+     */
+    private User $user;
+
+    /**
+     * @var \App\Models\Product
+     */
+    private Product $product;
+
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->withoutExceptionHandling();
+        $this->user = User::factory()->create();
+        $this->product = Product::factory()->create();
     }
 
+    /**
+     * @return void
+     */
     public function test_can_create_order_of_product_when_logged_in(): void
     {
-        $expectedUser = User::factory()->create();
-        $product = Product::factory()->create();
-
-        $response = $this->postJson(route('products.order', ['productId' => $product->uuid]));
+        $this->withoutExceptionHandling();
+        $response = $this->postJson(route('products.order', ['productId' => $this->product->uuid]));
 
         $response->assertRedirect();
 
         $this->assertDatabaseHas('orders', [
-            'user_id' => $expectedUser->uuid,
+            'user_id' => $this->user->uuid,
         ]);
         $this->assertDatabaseHas('order_lines', [
-            'product_id' => $product->uuid,
+            'product_id' => $this->product->uuid,
             'amount' => 1,
-            'price' => $product->price,
-            'name' => $product->name,
+            'price' => $this->product->price,
+            'name' => $this->product->name,
         ]);
+    }
+
+    /**
+     * @return void
+     */
+    public function test_should_fail_when_create_order_with_non_existing_product(): void
+    {
+        $this->withExceptionHandling();
+        $response = $this->postJson(route('products.order', ['productId' => 'what?']));
+        $response->assertNotFound();
     }
 }

@@ -19,6 +19,12 @@ ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/do
 RUN chmod +x /usr/local/bin/install-php-extensions && sync && \
     install-php-extensions http
 
+# Install Xdebug
+RUN apk add --no-cache --update linux-headers $PHPIZE_DEPS \
+    && pecl install xdebug \
+    && docker-php-ext-enable xdebug \
+    && apk del $PHPIZE_DEPS
+
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
 RUN useradd -G www-data,root -u $uid -d /home/$user $user
