@@ -20,12 +20,12 @@ readonly class OrderService
     }
 
     /**
-     * @param $productId
-     * @param $amount
+     * @param UUID $productId
+     * @param int $amount
      *
      * @return \App\Domain\Orders\Domain\Entities\Order
      */
-    public function orderProduct($productId, $amount): Order
+    public function orderProduct(UUID $productId, int $amount): Order
     {
         $product = $this->orderRepository->getProductById($productId);
         $newOrder = OrderFactory::createNew();

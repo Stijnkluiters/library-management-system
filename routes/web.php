@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
@@ -15,11 +16,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 Route::middleware(['web'])->group(function () {
+    Route::get('/', [HomeController::class, 'index'])->name('home.index');
+
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{orderId}', [OrderController::class, 'show'])->name('orders.show');
 
     Route::get('/products', [ProductController::class, 'index'])->name('products.index');
     Route::post('/products/{productId}', [OrderController::class, 'order'])->name('products.order');
-
-    Route::get('/', fn() => view('welcome'))->name('welcome');
 });

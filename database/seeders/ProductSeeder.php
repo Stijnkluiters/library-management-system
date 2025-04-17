@@ -3,8 +3,8 @@
 namespace Database\Seeders;
 
 use App\Domain\_shared\UUID;
+use App\Models\Product;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 
 class ProductSeeder extends Seeder
 {
@@ -13,13 +13,28 @@ class ProductSeeder extends Seeder
      */
     public function run(): void
     {
+        $faker = fake();
+
+        if (Product::query()->count() !== 0) {
+            return;
+        }
+
+        $productImages = [
+            'blackbook.jpg',
+            'bluebook.jpg',
+            'greenbook.jpg',
+            'purplebook.jpg',
+            'yellowbook.jpg',
+            'redbook.jpg',
+        ];
+
         for ($i = 0; $i < 10; $i++) {
-            DB::table('products')->insert([
-                'uuid' => UUID::new(),
-                'name' => fake('en_US')->word,
-                'price' => fake()->randomNumber(4),
-                'created_at' => now(),
-            ]);
+            $product = new Product();
+            $product->uuid = UUID::new();
+            $product->name = $faker->name;
+            $product->image = $productImages[array_rand($productImages)];
+            $product->price = $faker->randomNumber(2); // between 0 and 20,00 euros
+            $product->save();
         }
     }
 }

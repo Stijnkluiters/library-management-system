@@ -27,7 +27,8 @@ readonly class ProductRepository implements ProductRepositoryInterface
         return new ProductEntity(
             UUID::createFromString($product->uuid),
             new Price($product->price),
-            $product->name
+            $product->name,
+            $product->image,
         );
     }
 }

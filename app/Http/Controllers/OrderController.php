@@ -24,21 +24,13 @@ class OrderController extends Controller
      */
     public function order(string $productId): RedirectResponse
     {
-        $order = $this->orderService->orderProduct($productId, 1);
+        $uuid = UUID::createFromString($productId);
+
+        $order = $this->orderService->orderProduct($uuid, 1);
 
         return redirect()
             ->route('orders.show', $order->getUuid())
             ->with('success', 'Your product has successfully been ordered');
-    }
-
-    /**
-     * @return \Illuminate\Contracts\View\View
-     */
-    public function index(): View
-    {
-        $orders = $this->orderService->getAllOrdersForUser(UUID::createFromString('7f708597-79e2-11ef-b26c-0242ac190002'));
-
-        return view('order.index', compact('orders'));
     }
 
     /**

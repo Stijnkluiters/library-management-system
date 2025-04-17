@@ -28,7 +28,7 @@ final readonly class Price
 
     public function toHumanReadableString(): string
     {
-        return '&euro;' . number_format($this->price / 100, 2);
+        return number_format($this->price / 100, 2);
     }
 
     public function getPriceDividedBy100(): float

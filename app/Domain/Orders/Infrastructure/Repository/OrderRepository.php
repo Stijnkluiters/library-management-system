@@ -25,6 +25,11 @@ readonly class OrderRepository implements OrderRepositoryInterface
     ) {
     }
 
+    /**
+     * @param \App\Domain\Orders\Domain\Entities\Order $order
+     *
+     * @return void
+     */
     public function save(Order $order): void
     {
         foreach ($order->getEvents() as $domainEvent) {
@@ -35,6 +40,11 @@ readonly class OrderRepository implements OrderRepositoryInterface
         }
     }
 
+    /**
+     * @param \App\Domain\Orders\Domain\Events\OrderLineAdded $domainEvent
+     *
+     * @return void
+     */
     private function storeOrderLineAdded(OrderLineAdded $domainEvent): void
     {
         $product = $domainEvent->getOrderLine()->product;
@@ -45,7 +55,6 @@ readonly class OrderRepository implements OrderRepositoryInterface
             ],
             [
                 'uuid' => $domainEvent->getOrderUuid(),
-                'user_id' => $domainEvent->getUserId(),
                 'version' => 1,
             ]
         );
@@ -79,6 +88,11 @@ readonly class OrderRepository implements OrderRepositoryInterface
         return $orderModels->map(fn (OrderModel $orderModel) => $this->fromModelToDomain($orderModel))->toArray();
     }
 
+    /**
+     * @param \App\Models\Order $orderModel
+     *
+     * @return \App\Domain\Orders\Domain\Entities\Order
+     */
     private function fromModelToDomain(OrderModel $orderModel): Order
     {
         $orderLines = [];
@@ -102,6 +116,11 @@ readonly class OrderRepository implements OrderRepositoryInterface
         );
     }
 
+    /**
+     * @param string $orderId
+     *
+     * @return \App\Domain\Orders\Domain\Entities\Order
+     */
     public function getOrderById(string $orderId): Order
     {
         $order = OrderModel::findOrFail($orderId);
@@ -109,13 +128,18 @@ readonly class OrderRepository implements OrderRepositoryInterface
         return $this->fromModelToDomain($order);
     }
 
-    public function getProductById(string $productId): Product
+    /**
+     * @param \App\Domain\_shared\UUID $productId
+     *
+     * @return \App\Domain\Orders\Domain\ValueObjects\Product
+     */
+    public function getProductById(UUID $productId): Product
     {
         /** @var \App\Models\Product $productModel */
         $productModel = \App\Models\Product::where('uuid', $productId)->firstOrFail();
 
         return new Product(
-            UUID::createFromString($productModel->uuid),
+            $productId,
             new Price($productModel->price),
             $productModel->name
         );

@@ -37,7 +37,6 @@ class Order extends AggregateRoot
         $this->orderLines[] = $orderLine;
         $this->addEvent(new OrderLineAdded(
             $this->uuid,
-            User::query()->first()->uuid, // todo: login before ordering
             $orderLine,
             new Version($this->version->getVersionNumber() + 1)
         ));

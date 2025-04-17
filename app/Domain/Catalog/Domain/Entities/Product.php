@@ -16,11 +16,13 @@ readonly class Product
      * @param \App\Domain\_shared\UUID $uuid
      * @param \App\Domain\_shared\ValueObjects\Price $price
      * @param string $name
+     * @param ?string $image
      */
     public function __construct(
         private UUID $uuid,
         private Price $price,
-        private string $name
+        private string $name,
+        private ?string $image,
     ) {
     }
 
@@ -46,5 +48,13 @@ readonly class Product
     public function getName(): string
     {
         return $this->name;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getImage(): ?string
+    {
+        return $this->image;
     }
 }

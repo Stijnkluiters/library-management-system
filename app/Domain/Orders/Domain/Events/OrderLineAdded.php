@@ -13,13 +13,11 @@ readonly class OrderLineAdded implements DomainEvent
 {
     /**
      * @param \App\Domain\_shared\UUID $orderUuid
-     * @param \App\Domain\_shared\UUID $userId
      * @param \App\Domain\Orders\Domain\Entities\OrderLine $orderLine
      * @param \App\Domain\_shared\Version $version
      */
     public function __construct(
         private UUID $orderUuid,
-        private UUID $userId,
         private OrderLine $orderLine,
         private Version $version,
     )
@@ -48,13 +46,5 @@ readonly class OrderLineAdded implements DomainEvent
     public function getVersion(): Version
     {
         return $this->version;
-    }
-
-    /**
-     * @return \App\Domain\_shared\UUID
-     */
-    public function getUserId(): UUID
-    {
-        return $this->userId;
     }
 }

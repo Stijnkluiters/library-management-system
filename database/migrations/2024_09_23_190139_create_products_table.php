@@ -15,6 +15,7 @@ return new class extends Migration
             $table->uuid()->primary();
             $table->string('name');
             $table->bigInteger('price');
+            $table->text('image')->nullable();
             $table->timestamps();
         });
     }

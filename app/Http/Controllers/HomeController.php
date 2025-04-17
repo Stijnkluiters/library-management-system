@@ -3,18 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Domain\Catalog\Domain\Services\CatalogService;
-use Illuminate\View\View;
+use Illuminate\Contracts\View\View;
 
-class ProductController extends Controller
+class HomeController extends Controller
 {
     public function __construct(
-        private readonly CatalogService $catalogService
-    ) { }
+        private CatalogService $catalogService,
+    ) {
+    }
 
     public function index(): View
     {
         $products = $this->catalogService->getAllProducts();
 
-        return view('product.index', compact('products'));
+        return view('welcome', compact('products'));
     }
 }

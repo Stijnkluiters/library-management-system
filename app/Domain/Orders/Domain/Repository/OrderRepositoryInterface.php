@@ -32,9 +32,9 @@ interface OrderRepositoryInterface
     public function getOrderById(string $orderId): Order;
 
     /**
-     * @param string $productId
+     * @param \App\Domain\_shared\UUID $productId
      *
      * @return \App\Domain\Orders\Domain\ValueObjects\Product
      */
-    public function getProductById(string $productId): Product;
+    public function getProductById(UUID $productId): Product;
 }
